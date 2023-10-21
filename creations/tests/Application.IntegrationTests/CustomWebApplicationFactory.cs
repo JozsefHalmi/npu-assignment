@@ -24,13 +24,13 @@ internal class CustomWebApplicationFactory : WebApplicationFactory<Program>
             configurationBuilder.AddConfiguration(integrationConfig);
         });
 
-        builder.ConfigureServices((builder, services) =>
-        {
-            services
-                .Remove<DbContextOptions<ApplicationDbContext>>()
-                .AddDbContext<ApplicationDbContext>((sp, options) =>
-                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-                        builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-        });
+        //builder.ConfigureServices((builder, services) =>
+        //{
+        //    services
+        //        .Remove<DbContextOptions<ApplicationDbContext>>()
+        //        .AddDbContext<ApplicationDbContext>((sp, options) =>
+        //            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        //                builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+        //});
     }
 }

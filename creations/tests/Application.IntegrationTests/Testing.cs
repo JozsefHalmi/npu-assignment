@@ -16,7 +16,6 @@ public partial class Testing
     private static IConfiguration _configuration = null!;
     private static IServiceScopeFactory _scopeFactory = null!;
     private static Respawner _checkpoint = null!;
-    private static string? _currentUserId;
 
     [OneTimeSetUp]
     public void RunBeforeAnyTests()
@@ -58,8 +57,6 @@ public partial class Testing
         catch (Exception)
         {
         }
-
-        _currentUserId = null;
     }
 
     public static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues)

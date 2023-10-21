@@ -1,5 +1,6 @@
 ﻿using Creations.Application.Common.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Creations.Application.Creations.Queries.GetCreations;
 public record GetCreationsQuery : IRequest<IEnumerable<Creation>>
@@ -24,7 +25,7 @@ public class GetCreationsQueryHandler : IRequestHandler<GetCreationsQuery, IEnum
 
     public async Task<IEnumerable<Creation>> Handle(GetCreationsQuery request, CancellationToken cancellationToken)
     {
-        var brick = _context.Bricks.FirstOrDefault(b => b.Code == request.BrickCode);
+        var brick = await _context.Bricks.FirstOrDefaultAsync(b => b.Code == request.BrickCode);
 
         return _context.Creations
             .Where(c => c.Bricks.Contains(brick))
