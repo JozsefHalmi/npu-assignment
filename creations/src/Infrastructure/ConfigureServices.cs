@@ -1,6 +1,5 @@
 ﻿using Creations.Application.Common.Interfaces;
 using Creations.Infrastructure.Files;
-using Creations.Infrastructure.Identity;
 using Creations.Infrastructure.Persistence;
 using Creations.Infrastructure.Persistence.Interceptors;
 using Creations.Infrastructure.Services;
@@ -32,23 +31,8 @@ public static class ConfigureServices
 
         services.AddScoped<ApplicationDbContextInitialiser>();
 
-        services
-            .AddDefaultIdentity<ApplicationUser>()
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
-
-        services.AddIdentityServer()
-            .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
-
         services.AddTransient<IDateTime, DateTimeService>();
-        services.AddTransient<IIdentityService, IdentityService>();
         services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
-
-        services.AddAuthentication()
-            .AddIdentityServerJwt();
-
-        services.AddAuthorization(options =>
-            options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator")));
 
         return services;
     }

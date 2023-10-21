@@ -27,11 +27,6 @@ internal class CustomWebApplicationFactory : WebApplicationFactory<Program>
         builder.ConfigureServices((builder, services) =>
         {
             services
-                .Remove<ICurrentUserService>()
-                .AddTransient(provider => Mock.Of<ICurrentUserService>(s =>
-                    s.UserId == GetCurrentUserId()));
-
-            services
                 .Remove<DbContextOptions<ApplicationDbContext>>()
                 .AddDbContext<ApplicationDbContext>((sp, options) =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
