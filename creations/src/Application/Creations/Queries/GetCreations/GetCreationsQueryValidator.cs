@@ -17,9 +17,9 @@ public class GetCreationsQueryValidator : AbstractValidator<GetCreationsQuery>
             .MustAsync(Exist).WithMessage("The specified brick must exist.");
     }
 
-    public async Task<bool> Exist(string title, CancellationToken cancellationToken)
+    public async Task<bool> Exist(string brickCode, CancellationToken cancellationToken)
     {
         return await _context.Bricks
-            .AllAsync(l => l.Code != title, cancellationToken);
+            .AnyAsync(l => l.Code == brickCode, cancellationToken);
     }
 }

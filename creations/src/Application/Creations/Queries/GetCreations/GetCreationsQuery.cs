@@ -1,4 +1,6 @@
-﻿using Creations.Application.Common.Interfaces;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Creations.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +13,12 @@ public record GetCreationsQuery : IRequest<IEnumerable<CreationDto>>
 public class GetCreationsQueryHandler : IRequestHandler<GetCreationsQuery, IEnumerable<CreationDto>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GetCreationsQueryHandler(IApplicationDbContext context)
+    public GetCreationsQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
 
@@ -24,15 +28,6 @@ public class GetCreationsQueryHandler : IRequestHandler<GetCreationsQuery, IEnum
 
         return _context.Creations
             .Where(c => c.Bricks.Contains(brick))
-            .Select(creation => new CreationDto
-            {
-                CreatedBy = creation.CreatedBy,
-                CreatedDate = creation.Created,
-                //CreativityScore = creation.Created TODO
-                //UniquenessScore TODO
-                ImagePath = creation.ImagePath,
-                ThumbnailPath = creation.ThumbnailPath,
-                Description = creation.Description
-            });
+            .ProjectTo<CreationDto>(_mapper.ConfigurationProvider);
     }
 }

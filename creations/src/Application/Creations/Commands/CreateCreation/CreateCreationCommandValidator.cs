@@ -26,7 +26,8 @@ public class CreateCreationCommandValidator : AbstractValidator<CreateCreationCo
             .NotEmpty();
 
         RuleFor(v => v.CustomerId)
-            .MustAsync(CustomerExists).WithMessage("The specified customer does not exist.");
+            .MustAsync(CustomerExists).WithMessage("The specified customer does not exist.")
+            .MustAsync(PrivacyPolicyAccepted).WithMessage("The specified customer hasn't accepted the privacy policy.");
 
         RuleFor(v => v.BrickCodes)
            .NotNull()
@@ -44,6 +45,14 @@ public class CreateCreationCommandValidator : AbstractValidator<CreateCreationCo
     {
         return await _context.Customers
             .AnyAsync(l => l.Id == customerId, cancellationToken);
+    }
+
+    public async Task<bool> PrivacyPolicyAccepted(int customerId, CancellationToken cancellationToken)
+    {
+        var customer = await _context.Customers
+            .FirstAsync(l => l.Id == customerId, cancellationToken);
+
+        return customer.PrivacyPolicyAccepted;
     }
 
     public bool BrickCodesExist(IEnumerable<string> brickCodes)

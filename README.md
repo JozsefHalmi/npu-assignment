@@ -1,43 +1,3 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
-<a name="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
-
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
-
-
-<!-- ABOUT THE PROJECT -->
 ## About The Project
 
 NPU is a fan term that stands for Nice Part Usage and it refers to a LEGO element being used in a new
@@ -46,74 +6,73 @@ Tree below). The platform lets the users score others' creations based on creati
 
 The application uses the [Clean Architecture Solution Template](https://github.com/jasontaylordev/CleanArchitecture).
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+This section lists all the major frameworks/libraries used to bootstrap this project.
 
+* [Clean architecture template](https://github.com/jasontaylordev/CleanArchitecture)
 * [![.NET][.NET]][.NET-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+How to get it running locally.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+You need to have .NET 7 runtime installed before running this solution. Optionally, if you prefer to run it in containers, you have Docker installed.
 
-### Installation
+## Services
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+### Customer Management service
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+This service is responsible for handling customer handling-related operations, including authentication, authorization, registration, etc.
+The service publishes the following asynchronous messages:
+- `CustomerRegistered`
+- `CustomerUpdated`
+- `CustomerDeleted`
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### Agreements service
 
+This service is responsible for managing agreements. Currently supported agreement types:
+- Terms and conditions
+- Privacy policy
 
+The service publishes the following asynchronous messages:
+- `AgreementCreated`
+- `AgreementUpdated`
 
-<!-- USAGE EXAMPLES -->
-## Usage
+### Catalog service
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+This service is responsible for managing products, including sets and bricks.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+The service publishes the following asynchronous messages:
+- `BrickCreated`
+- `BrickUpdated`
+- `BrickArchived`
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Note: bricks are never deleted, but rather archived.
 
-## Database schema
+### Creations service
 
+This service is responsible for a social hub of community-made creations.
+
+The service may publish (not implemented yet) the following asynchronous messages:
+- `CreationCreated`
+- `CreationUpdated`
+- `CreationDeleted`
+- `ReviewCreated`
+- `ReviewUpdated`
+- `ReviewDeleted`
+- ...
+
+#### Notes, design decisions
+
+- The application uses an in-memory database for the sake of simplicity. The integration tests use the same. In a real-word scenario, I'd use a relational database like provider MS SQL or PostgreSQL.
+- Authentication and authorization is not implemented for the sake of simplicity
+- `Customer` and `Brick` tables serve as a local cache of remote data (owned by their respective microservices). They are maintained with asynchronous integrations (messages). In a real-world scenario, it is to be reviewed whether the privacy policy check should be an on-line check.
+
+#### Database schema
 
 ```mermaid
 erDiagram
@@ -123,6 +82,7 @@ erDiagram
         guid id PK
         text first_name
         text last_name
+        bool privacy_policy_accepted
     }
     CREATION |{--|| CREATION_BRICK : joins
     CREATION {
@@ -153,7 +113,6 @@ erDiagram
     }
 ```
 
-<!-- ROADMAP -->
 ## Roadmap
 
 - [x] Add Changelog
@@ -227,33 +186,5 @@ Use this space to list resources you find helpful and would like to give credit 
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
 [.NET]: https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white
 [.NET-url]: https://dotnet.microsoft.com/en-us/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 

@@ -75,7 +75,16 @@ public class ApplicationDbContextInitialiser
             {
                 Id=999,
                 FirstName = "Test",
-                LastName = "Test"
+                LastName = "Test",
+                PrivacyPolicyAccepted = true
+            });
+
+            _context.Customers.Add(new Customer()
+            {
+                Id = 1000,
+                FirstName = "Test not accepted",
+                LastName = "Test not accepted",
+                PrivacyPolicyAccepted = false
             });
             await _context.SaveChangesAsync();
         }

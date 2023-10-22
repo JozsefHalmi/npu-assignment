@@ -19,6 +19,24 @@ public class CreateCreationTests : BaseTestFixture
     }
 
     [Test]
+    public async Task ShouldCustomerAcceptedPrivacyPolicy()
+    {
+        var command = new CreateCreationCommand()
+        {
+            CustomerId = 1000,
+            BrickCodes = new List<string>() { "A01"},
+            Description = "Description",
+            ImagePath = "ImagePath",
+            ThumbnailPath = "ThumbnailPath",
+            Title = "Title"
+        };
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+
+    [Test]
     public async Task ShouldCreateCreation()
     {
         var customer = await FindAsync<Customer>(999);

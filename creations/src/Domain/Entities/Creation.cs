@@ -7,4 +7,5 @@ public class Creation : BaseAuditableEntity
     public string ImagePath { get; set; }
     public Customer Customer { get; set; }
     public IEnumerable<Brick> Bricks { get; set; }
+    public IEnumerable<Review> Reviews { get; set; }
 }

@@ -718,7 +718,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "createdDate": {
+          "created": {
             "type": "string",
             "format": "date-time"
           },
@@ -728,11 +728,13 @@
           },
           "uniquenessScore": {
             "type": "number",
-            "format": "float"
+            "format": "double",
+            "nullable": true
           },
           "creativityScore": {
             "type": "number",
-            "format": "float"
+            "format": "double",
+            "nullable": true
           },
           "thumbnailPath": {
             "type": "string",

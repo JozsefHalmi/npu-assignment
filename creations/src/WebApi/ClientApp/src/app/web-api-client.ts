@@ -1146,10 +1146,10 @@ export interface ICreateReviewCommand {
 }
 
 export class CreationDto implements ICreationDto {
-    createdDate?: Date;
+    created?: Date;
     createdBy?: string | undefined;
-    uniquenessScore?: number;
-    creativityScore?: number;
+    uniquenessScore?: number | undefined;
+    creativityScore?: number | undefined;
     thumbnailPath?: string | undefined;
     imagePath?: string | undefined;
     description?: string | undefined;
@@ -1165,7 +1165,7 @@ export class CreationDto implements ICreationDto {
 
     init(_data?: any) {
         if (_data) {
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"];
             this.uniquenessScore = _data["uniquenessScore"];
             this.creativityScore = _data["creativityScore"];
@@ -1184,7 +1184,7 @@ export class CreationDto implements ICreationDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy;
         data["uniquenessScore"] = this.uniquenessScore;
         data["creativityScore"] = this.creativityScore;
@@ -1196,10 +1196,10 @@ export class CreationDto implements ICreationDto {
 }
 
 export interface ICreationDto {
-    createdDate?: Date;
+    created?: Date;
     createdBy?: string | undefined;
-    uniquenessScore?: number;
-    creativityScore?: number;
+    uniquenessScore?: number | undefined;
+    creativityScore?: number | undefined;
     thumbnailPath?: string | undefined;
     imagePath?: string | undefined;
     description?: string | undefined;
