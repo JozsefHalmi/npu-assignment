@@ -121,5 +121,29 @@ public class ApplicationDbContextInitialiser
             });
             await _context.SaveChangesAsync();
         }
+
+        if (!_context.Reviews.Any())
+        {
+            _context.Reviews.Add(new Review()
+            {
+                Id = 1,
+                Customer = _context.Customers.First(),
+                Creation = _context.Creations.First(),
+                CreativityScore = 5,
+                UniquenessScore = 9,
+                Text = "Some text"
+            });
+            _context.Reviews.Add(new Review()
+            {
+                Id = 2,
+                Customer = _context.Customers.First(),
+                Creation = _context.Creations.First(),
+                CreativityScore = 4,
+                UniquenessScore = 3,
+                Text = "Some text2"
+            });
+      
+            await _context.SaveChangesAsync();
+        }
     }
 }

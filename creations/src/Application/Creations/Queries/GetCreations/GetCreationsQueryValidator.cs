@@ -14,8 +14,7 @@ public class GetCreationsQueryValidator : AbstractValidator<GetCreationsQuery>
 
         RuleFor(v => v.BrickCode)
             .NotEmpty().WithMessage("Brick code is required.")
-            //.MustAsync(Exist).WithMessage("The specified title already exists.")
-            ;
+            .MustAsync(Exist).WithMessage("The specified brick must exist.");
     }
 
     public async Task<bool> Exist(string title, CancellationToken cancellationToken)

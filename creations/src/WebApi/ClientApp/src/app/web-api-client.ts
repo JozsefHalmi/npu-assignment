@@ -16,6 +16,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IReviewsClient {
+    get(creationId: number | undefined, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfReviewDto>;
     post(command: CreateReviewCommand): Observable<void>;
 }
 
@@ -30,6 +31,66 @@ export class ReviewsClient implements IReviewsClient {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    get(creationId: number | undefined, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfReviewDto> {
+        let url_ = this.baseUrl + "/api/Reviews?";
+        if (creationId === null)
+            throw new Error("The parameter 'creationId' cannot be null.");
+        else if (creationId !== undefined)
+            url_ += "CreationId=" + encodeURIComponent("" + creationId) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PaginatedListOfReviewDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PaginatedListOfReviewDto>;
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<PaginatedListOfReviewDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfReviewDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
     }
 
     post(command: CreateReviewCommand): Observable<void> {
@@ -82,7 +143,7 @@ export class ReviewsClient implements IReviewsClient {
 }
 
 export interface ICreationsClient {
-    get(query: GetCreationsQuery): Observable<Creation[]>;
+    get(brickCode: string | undefined): Observable<CreationDto[]>;
     post(command: CreateCreationCommand): Observable<void>;
 }
 
@@ -99,18 +160,18 @@ export class CreationsClient implements ICreationsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    get(query: GetCreationsQuery): Observable<Creation[]> {
-        let url_ = this.baseUrl + "/api/Creations";
+    get(brickCode: string | undefined): Observable<CreationDto[]> {
+        let url_ = this.baseUrl + "/api/Creations?";
+        if (brickCode === null)
+            throw new Error("The parameter 'brickCode' cannot be null.");
+        else if (brickCode !== undefined)
+            url_ += "BrickCode=" + encodeURIComponent("" + brickCode) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(query);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
@@ -122,14 +183,14 @@ export class CreationsClient implements ICreationsClient {
                 try {
                     return this.processGet(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<Creation[]>;
+                    return _observableThrow(e) as any as Observable<CreationDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<Creation[]>;
+                return _observableThrow(response_) as any as Observable<CreationDto[]>;
         }));
     }
 
-    protected processGet(response: HttpResponseBase): Observable<Creation[]> {
+    protected processGet(response: HttpResponseBase): Observable<CreationDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -143,7 +204,7 @@ export class CreationsClient implements ICreationsClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(Creation.fromJS(item));
+                    result200!.push(CreationDto.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -872,6 +933,166 @@ export class WeatherForecastClient implements IWeatherForecastClient {
     }
 }
 
+export class PaginatedListOfReviewDto implements IPaginatedListOfReviewDto {
+    items?: ReviewDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfReviewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(ReviewDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfReviewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfReviewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfReviewDto {
+    items?: ReviewDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class ReviewDto implements IReviewDto {
+    customer?: CustomerDto;
+    creationId?: number;
+    creativityScore?: number;
+    uniquenessScore?: number;
+    text?: string;
+
+    constructor(data?: IReviewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.customer = _data["customer"] ? CustomerDto.fromJS(_data["customer"]) : <any>undefined;
+            this.creationId = _data["creationId"];
+            this.creativityScore = _data["creativityScore"];
+            this.uniquenessScore = _data["uniquenessScore"];
+            this.text = _data["text"];
+        }
+    }
+
+    static fromJS(data: any): ReviewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReviewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["creationId"] = this.creationId;
+        data["creativityScore"] = this.creativityScore;
+        data["uniquenessScore"] = this.uniquenessScore;
+        data["text"] = this.text;
+        return data;
+    }
+}
+
+export interface IReviewDto {
+    customer?: CustomerDto;
+    creationId?: number;
+    creativityScore?: number;
+    uniquenessScore?: number;
+    text?: string;
+}
+
+export class CustomerDto implements ICustomerDto {
+    id?: number;
+    firstName?: string;
+    lastName?: string;
+
+    constructor(data?: ICustomerDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+        }
+    }
+
+    static fromJS(data: any): CustomerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        return data;
+    }
+}
+
+export interface ICustomerDto {
+    id?: number;
+    firstName?: string;
+    lastName?: string;
+}
+
 export class CreateReviewCommand implements ICreateReviewCommand {
     customerId?: number;
     creationId?: number;
@@ -924,7 +1145,7 @@ export interface ICreateReviewCommand {
     text: string;
 }
 
-export class Creation implements ICreation {
+export class CreationDto implements ICreationDto {
     createdDate?: Date;
     createdBy?: string | undefined;
     uniquenessScore?: number;
@@ -933,7 +1154,7 @@ export class Creation implements ICreation {
     imagePath?: string | undefined;
     description?: string | undefined;
 
-    constructor(data?: ICreation) {
+    constructor(data?: ICreationDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -954,9 +1175,9 @@ export class Creation implements ICreation {
         }
     }
 
-    static fromJS(data: any): Creation {
+    static fromJS(data: any): CreationDto {
         data = typeof data === 'object' ? data : {};
-        let result = new Creation();
+        let result = new CreationDto();
         result.init(data);
         return result;
     }
@@ -974,7 +1195,7 @@ export class Creation implements ICreation {
     }
 }
 
-export interface ICreation {
+export interface ICreationDto {
     createdDate?: Date;
     createdBy?: string | undefined;
     uniquenessScore?: number;
@@ -982,42 +1203,6 @@ export interface ICreation {
     thumbnailPath?: string | undefined;
     imagePath?: string | undefined;
     description?: string | undefined;
-}
-
-export class GetCreationsQuery implements IGetCreationsQuery {
-    brickCode!: string;
-
-    constructor(data?: IGetCreationsQuery) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.brickCode = _data["brickCode"];
-        }
-    }
-
-    static fromJS(data: any): GetCreationsQuery {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetCreationsQuery();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["brickCode"] = this.brickCode;
-        return data;
-    }
-}
-
-export interface IGetCreationsQuery {
-    brickCode: string;
 }
 
 export class CreateCreationCommand implements ICreateCreationCommand {

@@ -3,17 +3,12 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Creations.Application.Creations.Queries.GetCreations;
-public record GetCreationsQuery : IRequest<IEnumerable<Creation>>
+public record GetCreationsQuery : IRequest<IEnumerable<CreationDto>>
 {
     public string BrickCode { get; init; }
-
-    public GetCreationsQuery(string brickCode)
-    {
-        BrickCode = brickCode;
-    }
 }
 
-public class GetCreationsQueryHandler : IRequestHandler<GetCreationsQuery, IEnumerable<Creation>>
+public class GetCreationsQueryHandler : IRequestHandler<GetCreationsQuery, IEnumerable<CreationDto>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -23,13 +18,13 @@ public class GetCreationsQueryHandler : IRequestHandler<GetCreationsQuery, IEnum
     }
 
 
-    public async Task<IEnumerable<Creation>> Handle(GetCreationsQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<CreationDto>> Handle(GetCreationsQuery request, CancellationToken cancellationToken)
     {
         var brick = await _context.Bricks.FirstOrDefaultAsync(b => b.Code == request.BrickCode);
 
         return _context.Creations
             .Where(c => c.Bricks.Contains(brick))
-            .Select(creation => new Creation
+            .Select(creation => new CreationDto
             {
                 CreatedBy = creation.CreatedBy,
                 CreatedDate = creation.Created,

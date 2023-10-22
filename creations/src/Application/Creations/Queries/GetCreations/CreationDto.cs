@@ -1,6 +1,6 @@
 ﻿namespace Creations.Application.Creations.Queries.GetCreations;
 
-public class Creation
+public class CreationDto
 {
     public DateTime CreatedDate { get; init; }
     public string? CreatedBy { get; set; }

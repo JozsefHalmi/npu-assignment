@@ -6,7 +6,7 @@ namespace Creations.WebApi.Controllers;
 public class CreationsController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<IEnumerable<Creation>> Get(GetCreationsQuery query)
+    public async Task<IEnumerable<CreationDto>> Get([FromQuery] GetCreationsQuery query)
     {
         return await Mediator.Send(query);
     }
