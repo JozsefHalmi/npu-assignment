@@ -6,22 +6,49 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/Reviews": {
+      "post": {
+        "tags": [
+          "Reviews"
+        ],
+        "operationId": "Reviews_Post",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Creations": {
       "get": {
         "tags": [
           "Creations"
         ],
         "operationId": "Creations_Get",
-        "parameters": [
-          {
-            "name": "brickCode",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            },
-            "x-position": 1
-          }
-        ],
+        "requestBody": {
+          "x-name": "query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetCreationsQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -35,6 +62,29 @@
                 }
               }
             }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Creations"
+        ],
+        "operationId": "Creations_Post",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCreationCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
           }
         }
       }
@@ -513,6 +563,42 @@
   },
   "components": {
     "schemas": {
+      "CreateReviewCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "creationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "uniquenessScore": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 10.0,
+            "minimum": 0.0,
+            "exclusiveMinimum": true
+          },
+          "creativityScore": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 10.0,
+            "minimum": 0.0,
+            "exclusiveMinimum": true
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
       "Creation": {
         "type": "object",
         "additionalProperties": false,
@@ -544,6 +630,66 @@
           "description": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "GetCreationsQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "brickCode"
+        ],
+        "properties": {
+          "brickCode": {
+            "type": "string",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "CreateCreationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "title",
+          "description",
+          "thumbnailPath",
+          "imagePath",
+          "brickCodes"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "nullable": false
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "nullable": false
+          },
+          "thumbnailPath": {
+            "type": "string",
+            "minLength": 1,
+            "nullable": false
+          },
+          "imagePath": {
+            "type": "string",
+            "minLength": 1,
+            "nullable": false
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "brickCodes": {
+            "type": "array",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
