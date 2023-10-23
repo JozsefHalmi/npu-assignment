@@ -1,6 +1,6 @@
 ## About The Project
 
-NPU is a fan term that stands for Nice Part Usage and it refers to a LEGO element being used in a new
+NPU is a fan term that stands for Nice Part Usage and it refers to a brick element being used in a new
 and unexpected way, yet it perfectly fits the overall build (such as the frog elements on the Bonsai
 Tree below). The platform lets the users score others' creations based on creativity and uniqueness.
 
