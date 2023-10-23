@@ -14,7 +14,7 @@ public class GetReviewsWithPaginationQueryValidator : AbstractValidator<GetRevie
 
         RuleFor(v => v.CreationId)
             .NotEmpty().WithMessage("Brick code is required.")
-            .MustAsync(Exist).WithMessage("The specified title already exists.");
+            .MustAsync(Exist).WithMessage("The specified creation must exist.");
     }
 
     public async Task<bool> Exist(int id, CancellationToken cancellationToken)
