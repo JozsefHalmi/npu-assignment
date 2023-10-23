@@ -42,6 +42,10 @@
     <PackageReference Include="ZymLabs.NSwag.FluentValidation.AspNetCore" Version="0.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 
   <!-- Auto-generated Open API specification and Angular TypeScript clients -->
   <PropertyGroup>

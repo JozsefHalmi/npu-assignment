@@ -6,12 +6,10 @@ namespace Creations.Application.Common.Behaviours;
 public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where TRequest : notnull
 {
     private readonly ILogger _logger;
-    private readonly ICurrentUserService _currentUserService;
 
-    public LoggingBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService)
+    public LoggingBehaviour(ILogger<TRequest> logger)
     {
         _logger = logger;
-        _currentUserService = currentUserService;
     }
 
     public async Task Process(TRequest request, CancellationToken cancellationToken)

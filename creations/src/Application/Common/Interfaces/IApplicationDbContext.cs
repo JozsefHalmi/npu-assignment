@@ -4,10 +4,6 @@ using Microsoft.EntityFrameworkCore;
 namespace Creations.Application.Common.Interfaces;
 public interface IApplicationDbContext
 {
-    DbSet<TodoList> TodoLists { get; }
-
-    DbSet<TodoItem> TodoItems { get; }
-
     DbSet<Customer> Customers { get; }
 
     DbSet<Creation> Creations { get; }

@@ -3,7 +3,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Creations.Application.Common.Interfaces;
 
-namespace Reviews.Application.TodoLists.Commands.CreateTodoList;
+namespace Creations.Application.Reviews.GetReviews;
 public class GetReviewsWithPaginationQueryValidator : AbstractValidator<GetReviewsWithPaginationQuery>
 {
     private readonly IApplicationDbContext _context;

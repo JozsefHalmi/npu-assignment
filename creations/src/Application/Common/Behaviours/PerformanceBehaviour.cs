@@ -8,16 +8,13 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 {
     private readonly Stopwatch _timer;
     private readonly ILogger<TRequest> _logger;
-    private readonly ICurrentUserService _currentUserService;
 
     public PerformanceBehaviour(
-        ILogger<TRequest> logger,
-        ICurrentUserService currentUserService)
+        ILogger<TRequest> logger)
     {
         _timer = new Stopwatch();
 
         _logger = logger;
-        _currentUserService = currentUserService;
     }
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)

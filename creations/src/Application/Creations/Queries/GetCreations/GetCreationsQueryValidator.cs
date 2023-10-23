@@ -1,9 +1,8 @@
 ﻿using Creations.Application.Common.Interfaces;
-using Creations.Application.Creations.Queries.GetCreations;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Creations.Application.TodoLists.Commands.CreateTodoList;
+namespace Creations.Application.Creations.Queries.GetCreations;
 public class GetCreationsQueryValidator : AbstractValidator<GetCreationsQuery>
 {
     private readonly IApplicationDbContext _context;

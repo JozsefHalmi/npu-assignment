@@ -1,6 +1,4 @@
-﻿using Creations.Application.Common.Interfaces;
-using Creations.Infrastructure.Persistence;
-using Creations.WebApi.Services;
+﻿using Creations.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using NSwag;
 using NSwag.Generation.Processors.Security;
@@ -12,8 +10,6 @@ public static class ConfigureServices
     public static IServiceCollection AddWebApiServices(this IServiceCollection services)
     {
         services.AddDatabaseDeveloperPageExceptionFilter();
-
-        services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         services.AddHttpContextAccessor();
 

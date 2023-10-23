@@ -1,10 +1,7 @@
 ﻿using Creations.Application.Common.Interfaces;
-using Creations.Infrastructure.Files;
 using Creations.Infrastructure.Persistence;
 using Creations.Infrastructure.Persistence.Interceptors;
 using Creations.Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -32,7 +29,6 @@ public static class ConfigureServices
         services.AddScoped<ApplicationDbContextInitialiser>();
 
         services.AddTransient<IDateTime, DateTimeService>();
-        services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
 
         return services;
     }
