@@ -12,7 +12,15 @@ The application uses the [Clean Architecture Solution Template](https://github.c
 This section lists all the major frameworks/libraries used to bootstrap this project.
 
 * [Clean architecture template](https://github.com/jasontaylordev/CleanArchitecture)
-* [![.NET][.NET]][.NET-url]
+* [.NET 7](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+* [MediatR](https://github.com/jbogard/MediatR)
+* [FluentValidation](https://docs.fluentvalidation.net/en/latest/)
+* [AutoMapper](https://automapper.org/)
+* [FluentAssertions](https://fluentassertions.com/)
+* [NUnit](https://nunit.org/)
+* [Moq](https://github.com/devlooped/moq)
+* ...
+
 
 ## Getting Started
 
