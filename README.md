@@ -124,6 +124,7 @@ erDiagram
 ## Roadmap
 
 - [x] Implement a basic version fo the `Creations` service
+- [] Adding observability features to the `Creations` microservice (metrics, tracing, logging)
 - [ ] Implement `Customer Management` microservice and add authentication, authorization
 - [ ] Listen to events sent by `Customer Management`
 - [ ] Implement Agreements API
