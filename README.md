@@ -85,7 +85,7 @@ The service may publish (not implemented yet) the following asynchronous message
 ```mermaid
 erDiagram
     CUSTOMER ||--o{ CREATION : creates
-    CUSTOMER ||--o{ REVIEW : gives
+    CUSTOMER ||--o{ REVIEW : creates
     CUSTOMER {
         guid id PK
         text first_name
@@ -111,7 +111,7 @@ erDiagram
         text name
     }
 
-    REVIEW }o--|| CREATION : gives
+    REVIEW }o--|| CREATION : assigned
     REVIEW {
         guid id PK
         guid customer_id FK
@@ -124,7 +124,7 @@ erDiagram
 ## Roadmap
 
 - [x] Implement a basic version fo the `Creations` service
-- [] Adding observability features to the `Creations` microservice (metrics, tracing, logging)
+- [ ] Adding observability features to the `Creations` microservice (metrics, tracing, logging)
 - [ ] Implement `Customer Management` microservice and add authentication, authorization
 - [ ] Listen to events sent by `Customer Management`
 - [ ] Implement Agreements API
